@@ -1,40 +1,22 @@
-import { useSelector, useDispatch } from "react-redux";
-import {
-  selectFilteredContacts,
-  selectIsLoading,
-  selectIsError,
-} from "../../redux/contactsSlice";
-import { deleteContact } from "../../redux/contactsOps";
+import { useSelector } from "react-redux";
+import Contact from "../Contact/Contact";
 import s from "./ContactList.module.css";
 
-const ContactList = () => {
-  const dispatch = useDispatch();
-  const contacts = useSelector(selectFilteredContacts);
-  const isLoading = useSelector(selectIsLoading);
-  const isError = useSelector(selectIsError);
+function ContactList() {
+  const contacts = useSelector((state) => state.contacts.items);
+  const filter = useSelector((state) => state.filters.filter);
 
-  if (isLoading) return <p>Завантаження...</p>;
-  if (isError) return <p>Помилка: {isError}</p>;
+  const filteredContacts = contacts.filter((contact) =>
+    contact.name.toLowerCase().includes(filter.toLowerCase())
+  );
 
   return (
     <ul className={s.list}>
-      {contacts.length > 0 ? (
-        contacts.map(({ id, name, number }) => (
-          <li key={id} className={s.item}>
-            {name}: {number}
-            <button
-              className={s.button}
-              onClick={() => dispatch(deleteContact(id))}
-            >
-              Видалити
-            </button>
-          </li>
-        ))
-      ) : (
-        <p>Список контактів порожній.</p>
-      )}
+      {filteredContacts.map((contact) => (
+        <Contact key={contact.id} contact={contact} />
+      ))}
     </ul>
   );
-};
+}
 
 export default ContactList;

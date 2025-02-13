@@ -6,8 +6,10 @@ function ContactList() {
   const contacts = useSelector((state) => state.contacts.items);
   const filter = useSelector((state) => state.filters.filter);
 
+  const normalizedFilter = filter ? filter.toLowerCase() : "";
+
   const filteredContacts = contacts.filter((contact) =>
-    contact.name.toLowerCase().includes(filter.toLowerCase())
+    contact.name.toLowerCase().includes(normalizedFilter)
   );
 
   return (
